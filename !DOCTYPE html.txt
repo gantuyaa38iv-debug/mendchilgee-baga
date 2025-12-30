@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Багш нартаа хүргэх Шинэ оны мэндчилгээ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@300;400;700&family=Rubik+Gemstones&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #0f172a, #1e1b4b, #312e81);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* Snow Effect */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+
+        /* Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Typography */
+        .title-font { font-family: 'Lobster', cursive; }
+        .hand-font { font-family: 'Pacifico', cursive; }
+        .cool-text {
+            font-family: 'Rubik Gemstones', cursive;
+            background: linear-gradient(to right, #facc15, #f87171, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s infinite linear;
+        }
+        @keyframes shine {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Images & Loader */
+        .image-placeholder {
+            width: 100%;
+            height: 180px;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .overlay-icon { font-size: 4rem; color: rgba(255,255,255,0.9); text-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .bg-young { background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%); }
+        .bg-middle { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); }
+        .bg-senior { background: linear-gradient(to top, #c471f5 0%, #fa71cd 100%); }
+
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #facc15;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-left: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Teachers Grid */
+        .teacher-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .teacher-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            color: #facc15;
+            border-color: #facc15;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 relative">
+
+    <div class="snow-container" id="snowContainer"></div>
+
+    <div class="max-w-6xl w-full z-10 space-y-8 mb-16">
+        
+        <!-- Header -->
+        <header class="text-center space-y-4 animate-fade-in py-8">
+            <div class="inline-flex items-center bg-white/10 px-4 py-2 rounded-full text-yellow-300 font-bold border border-white/20 backdrop-blur-sm">
+                <i class="fas fa-clock mr-2"></i> <span id="currentDate"></span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold title-font text-white drop-shadow-lg leading-tight">
+                Шинэ Оны Мэнд Хүргэе!
+            </h1>
+            <p class="text-xl text-blue-100 max-w-2xl mx-auto italic font-light">
+                Эрдмийн их өргөөний эрхэм багш нартаа
+            </p>
+        </header>
+
+        <!-- AI Interaction Section -->
+        <div class="glass-card p-6 md:p-8 relative overflow-hidden border-yellow-400/30 border-2 shadow-2xl">
+            <div class="absolute -right-10 -top-10 text-9xl text-white/5 rotate-12 pointer-events-none">
+                <i class="fas fa-magic"></i>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <!-- Greeting Generator -->
+                <div class="space-y-4 z-10">
+                    <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-500">
+                        <i class="fas fa-wand-magic-sparkles mr-2"></i>Шидэт Мэндчилгээ
+                    </h2>
+                    <p class="text-gray-300 text-sm">Багшаа сонгоод зөвхөн түүнд зориулсан шүлгийг AI-аар зохиолгоорой.</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <select id="teacherSelect" class="flex-1 px-4 py-3 rounded-xl bg-black/30 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-pink-400 appearance-none cursor-pointer hover:bg-black/40 transition">
+                            <option value="" disabled selected>Багшийн нэрийг сонгоно уу...</option>
+                            <!-- Options will be populated by JS -->
+                        </select>
+                        <button onclick="generateGreeting()" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center">
+                            Үүсгэх <div id="greetingLoader" class="loader"></div>
+                        </button>
+                    </div>
+                    
+                    <div id="greetingResult" class="hidden mt-4 p-4 bg-white/10 rounded-xl border-l-4 border-pink-500 italic text-lg leading-relaxed animate-pulse-once"></div>
+                </div>
+
+                <!-- Horoscope -->
+                <div class="space-y-4 z-10 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8">
+                    <h2 class="text-2xl font-bold text-cyan-300">
+                        <i class="fas fa-star mr-2"></i>2026 оны Зурхай
+                    </h2>
+                    <p class="text-gray-300 text-sm">Ирэх онд таныг сургууль дээр юу хүлээж байна вэ?</p>
+                    <button onclick="generateHoroscope()" class="w-full bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/30 text-cyan-100 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center group">
+                        <i class="fas fa-dice mr-2 group-hover:rotate-180 transition-transform"></i> Зурхай үзэх
+                        <div id="horoscopeLoader" class="loader"></div>
+                    </button>
+                    <div id="horoscopeResult" class="hidden mt-4 text-cyan-200 text-center font-medium"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Categories -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Young Teachers -->
+            <div class="glass-card p-6 flex flex-col items-center text-center transform hover:scale-105 transition duration-500">
+                <div class="image-placeholder bg-young">
+                    <i class="fas fa-rocket overlay-icon animate-bounce"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-pink-300 mb-2 title-font">Залуу Багш Нартаа</h2>
+                <div class="text-yellow-400 text-sm mb-4 font-bold uppercase tracking-widest">
+                    <i class="fas fa-fire mr-1"></i> Эрч хүч & Идэвх
+                </div>
+                <p class="text-gray-100 text-sm italic mb-4">
+                    "Өөрийгөө дайчилж, шинийг эрэлхийлдэг<br>
+                    Өөдрөг тэмүүллээр жигүүрлэсэн та нар минь..."
+                </p>
+                <p class="text-sm">
+                    Гал цогтой залуу насныхаа эрч хүчээр ирээдүйг гэрэлтүүлж, хүүхэд бүрийн зүрхэнд мөрөөдлийн оч асааж яваад тань баярлалаа.
+                </p>
+            </div>
+
+            <!-- Middle Generation Teachers -->
+            <div class="glass-card p-6 flex flex-col items-center text-center transform hover:scale-105 transition duration-500">
+                <div class="image-placeholder bg-middle">
+                    <i class="fas fa-tree overlay-icon"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-cyan-300 mb-2 title-font">Дунд Үеийн Багш Нартаа</h2>
+                <div class="text-green-400 text-sm mb-4 font-bold uppercase tracking-widest">
+                    <i class="fas fa-anchor mr-1"></i> Тууштай & Найдвартай
+                </div>
+                <p class="text-gray-100 text-sm italic mb-4">
+                    "Мэргэжилдээ эзэн, сургуулийн багана<br>
+                    Мятрашгүй зүтгэлт дунд үеийнхэн минь..."
+                </p>
+                <p class="text-sm">
+                    Тогтуун ухаан, тууштай чанараараа бусдадаа үлгэрлэж, ачааны хүндийг үүрч, ажлын голыг нугалдаг та нараараа бахархдаг шүү.
+                </p>
+            </div>
+
+            <!-- Senior Teachers -->
+            <div class="glass-card p-6 flex flex-col items-center text-center transform hover:scale-105 transition duration-500">
+                <div class="image-placeholder bg-senior">
+                    <i class="fas fa-book-open overlay-icon"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-purple-300 mb-2 title-font">Ахмад Багш Нартаа</h2>
+                <div class="text-yellow-500 text-sm mb-4 font-bold uppercase tracking-widest">
+                    <i class="fas fa-crown mr-1"></i> Туршлага & Ухаарал
+                </div>
+                <p class="text-gray-100 text-sm italic mb-4">
+                    "Алтан сургаалаа харамгүй түгээдэг<br>
+                    Ачлал дүүрэн ахмад багш нар минь..."
+                </p>
+                <p class="text-sm">
+                    Үг нь үнэн, үйл нь зөв, арвин их туршлагаараа биднийгээ үргэлж чиглүүлж, зааж сургаж байдагт тань гүнээ талархаж байна.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teachers Wall -->
+        <div class="glass-card p-8">
+            <h3 class="text-center text-2xl font-bold text-white mb-6 hand-font tracking-wider">
+                <i class="fas fa-users mr-2 text-yellow-400"></i>Манай Бахархал
+            </h3>
+            <div class="flex flex-wrap justify-center gap-3" id="teachersGrid">
+                <!-- Teachers will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center py-10">
+            <h2 class="text-5xl md:text-7xl font-black cool-text mb-4 drop-shadow-2xl">
+                БҮХ ЗҮЙЛЭЭРЭЭ<br>КҮҮЛ БАЙГААРАЙ!
+            </h2>
+            <p class="text-blue-300 text-xl font-bold">Сургалтын менежер Ц.Гантуяа</p>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA: Teacher Names & Fallback Poems (Offline Mode) ---
+        // Хэрэв AI түлхүүр байхгүй бол эдгээр шүлэг автоматаар гарна.
+        const teachersData = {
+            "А.Бямба": "Спортын талбарт хурдтай байж,\nУрлагийн тайзнаа уянгатай дуулаарай.\nДаруухан зантай эрхэм багш танд\nДүүрэн жаргалтай шинэ оны мэнд хүргэе!",
+            "Г.Мөнхбат": "Шагайн харваанд мэргэн байж,\nСпортын талбарт цоглог яваарай.\nӨнөр бүлийнхээ хойморт жаргаж\nӨлзий дүүрэн шинэ оноо угтаарай!",
+            "Ш.Төрбат": "Уран бийрийн үзүүр нь шидэт,\nУужуу ухаант соёлч нэгэн.\nОхидынхоо хайранд умбаж яваа\nОнцгой сайхан аав танд баяр хүргэе!",
+            "Б.Отгон": "Хөгжмийн эгшгээр зүрх хөглөсөн,\nХошин яриагаар инээд бэлэглэсэн.\nАвьяас билэг нь ундарч байх болтугай,\nАз жаргал дүүрэн шинэ он болог!",
+            "Р.Лхасүрэн": "Бусдын төлөө цохилох зүрхтэй,\nҮгүй гэж хэлдэггүй тусч сэтгэлтэй.\nУриалгахан зангаараа бусдыг манлайлж\nУрам зориг дүүрэн шинэ оноо угтаарай!",
+            "Ж.Түмэнжаргал": "Тайван зангаар бүхнийг аргадсан,\nБолохгүй зүйл үгүй гэж итгэсэн.\nХөвгүүдийнхээ хайранд жаргаж яваа\nХөөрхөн багшдаа шинэ оны мэнд хүргэе!",
+            "Ц.Ууганням": "Цаг хугацааны эзэн болсон,\nМэргэн ухааны уурхай болсон.\nАжил амьдралаа хослуулж чадсан\nАвхаалжтай тандаа аз жаргал хүсье!",
+            "Б.Одонтуяа": "Нэг зангаараа нандин чанартай,\nНаргиж цэнгэхдээ ч цоглог байдаг.\nХаламжит ээж, сайн багш танд\nХамгийн сайн сайхныг хүсэн ерөөе!",
+            "Т.Мөнхзаяа": "Ажилч хичээнгүй зан тань бахархал,\nАрвин их туршлага тань үлгэрлэл.\nМэдлэг оюунаа түгээн дэлгэрүүлж\nМөнхөд жаргалтай яваарай!",
+            "Т.Энхтуул": "Цэвэрч нямбай зан тань чимэг,\nЧин үнэнч сэтгэл тань бэлэг.\nАриун үйлс дэлгэрэх болтугай,\nАз жаргалтай шинэ он болог!",
+            "Г.Долгормаа": "Хурд хүч нь гайхалтай,\nШийдэмгий зан нь бахархалтай.\nҮзэсгэлэн гоо залуу багш танд\nҮргэлж дээшээ дэвжихийн ерөөл өргөе!",
+            "Б.Цэрэнжаргал": "Бусдад туслах чин сэтгэлтэй,\nАжил үйлсэд шуурхай нэгэн.\nАмжилт бүтээлээр дүүрэн байж\nАлтан нар шиг гэрэлтэж яваарай!",
+            "Э.Баярцэцэг": "Эрдмийн үйлсэд чин сэтгэлтэй,\nГар бөмбөгийн спортод авхаалжтай.\nАмжилт бүхэн тань өөдөө байж\nАз жаргалаар бялхаж яваарай!",
+            "А.Саруул": "Шударга үнэн зан тань бахархал,\nТусч сайхан сэтгэл тань хайр.\nСаруул ухаанаар ирээдүйг гэрэлтүүлж\nСайхан бүхнийг танд хүсье!",
+            "Ж.Ариунтуяа": "Үнэтэй зөвлөгөө нь ухаарал хайрласан,\nСоёлтой харилцаа нь хүндлэл дагуулсан.\nБагш тандаа эрүүл энх,\nБаяр хөөр дүүрэн байхыг ерөөе!",
+            "Ж.Саранчимэг": "Сэтгэл шингэсэн үйлс бүхэн тань,\nСэргэлэн цовоо зан чанар тань.\nХамт олноо үргэлж баясгаж\nХамгийн сайхан бүхнийг эдлээрэй!",
+            "Ц.Санжмаа": "Бусдад тусч сайхан сэтгэлтэй,\nЭрдэм мэдлэг төгс нэгэн.\nХаламжит ээж, сайн багш танд\nХязгааргүй их баяр хөөрийг хүсье!",
+            "Б.Оюунханд": "Урлагийн тэнгэрт гялалзах од,\nУхаан билгийн уурхай болсон багш.\nДуу хуур цалгиж, инээд хөөр бялхсан\nДундаршгүй жаргалтай шинэ он болог!",
+            "Ж.Өлзийжаргал": "Үзэсгэлэн гоо төрх нь гэрэлтсэн,\nҮнэнч хичээнгүй зан нь тодорсон.\nЗалуу насны эрч хүчээр дүүрэн\nЗаяа хийморьтой яваарай!",
+            "М.Өлзийжаргал": "Эвсэг зөөлөн зангаараа танигдсан,\nНягт нямбай чанараараа гайхагдсан.\nОюунлаг хөвгүүдэээрээ бахархаж\nОлондоо хүндлэгдэж яваарай!",
+            "С.Энхмаа": "Гоо үзэсгэлэн төгс бүрдсэн,\nЭелдэг соёлтой зан нь чимсэн.\nХаламжит ээж, сайхан эмэгтэй танд\nХорвоогийн сайн сайхныг хүсье!",
+            "З.Хэрлэн": "Уран бүжгийн хэмнэлээр сэтгэл баясгасан,\nЯлгаваргүй ариун сэтгэлээр бусдыг татсан.\nАвьяас билэг тань улам дэлгэрч\nАз жаргалаар дүүрэн яваарай!",
+            "Э.Амарбаяр": "Ур чадвар нь өсөн дэвжсэн,\nҮзэсгэлэн гоо төгс нэгэн.\nАмжилтын оргил өөд тэмүүлж\nАлтан нар шиг гэрэлтэж яваарай!",
+            "Б.Баярцэнгэл": "Үеийн мэт дотно харилцаатай,\nӨвөрмөц дэгжин стил имижтэй.\nБаяр хөөрөөр дүүрэн байж\nБагшийн алдраа мандуулж яваарай!",
+            "Х.Цэцэгсүрэн": "Инээмсэглэл тодорсон гэгээлэг төрх,\nХайр түгээсэн өгөөмөр үйлс.\nБусдын төлөө гэсэн сэтгэл тань\nБуцаад тандаа жаргал болон ирэг!",
+            "Ж.Дунгаамаа": "Эрдэм мэдлэг түгээх үйлсдээ,\nЭзэн нь болж явдаг багш аа.\nШинэ ондоо амжилт бүтээлээр дүүрэн\nШижир алт шиг гялалзаж яваарай!"
+        };
+
+        const horoscopeData = [
+            "2026 онд таны шавь нар даалгавраа 100% биелүүлж, таныг баярлуулах болно.",
+            "Ирэх онд та сургуулийн хамгийн 'Күүл' багшаар шалгарах магадлалтай.",
+            "Таны хичээл зүтгэл үнэлэгдэж, гэнэтийн сайхан шагнал хүлээж байна.",
+            "Самбарын өмнө зогсох бүрт тань шинэ санаа ундарч, сурагчид тань бишрэх болно.",
+            "2026 онд таны цалин нэмэгдэж, ажлын ачаалал багасах болтугай!",
+            "Таны ангийн бүх сурагчид энэ жил онц сурах одтой байна."
+        ];
+
+        // --- INIT: Populate UI ---
+        window.onload = function() {
+            const select = document.getElementById('teacherSelect');
+            const teachersList = Object.keys(teachersData);
+            
+            // Sort teachers
+            teachersList.sort().forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+
+            const grid = document.getElementById('teachersGrid');
+            teachersList.forEach(name => {
+                const badge = document.createElement('div');
+                badge.className = 'teacher-badge';
+                badge.onclick = () => {
+                    document.getElementById('teacherSelect').value = name;
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                };
+                badge.innerHTML = `<i class="fas fa-user-graduate mr-2 text-blue-300 text-xs"></i>${name}`;
+                grid.appendChild(badge);
+            });
+
+            setInterval(createSnow, 200);
+            updateDate();
+        };
+
+        // --- SIMULATED AI (Fallback Mode) ---
+        // This makes sure it works even when shared as a link without API key
+        
+        async function generateGreeting() {
+            const select = document.getElementById('teacherSelect');
+            const name = select.value;
+            const loader = document.getElementById('greetingLoader');
+            const result = document.getElementById('greetingResult');
+
+            if (!name) {
+                alert("Та жагсаалтаас багшийн нэрийг сонгоно уу!");
+                return;
+            }
+
+            loader.style.display = 'inline-block';
+            result.classList.add('hidden');
+
+            // Simulate "Thinking" time
+            setTimeout(() => {
+                loader.style.display = 'none';
+                // Get pre-written poem
+                let text = teachersData[name] || `Эрхэм хүндэт ${name} багш танд\nШинэ оны халуун мэнд хүргэе!\nАжил үйлс нь өөдрөг байж\nАз жаргалаар дүүрэн яваарай!`;
+                
+                result.innerHTML = `<strong class="text-yellow-300">${name} багш аа:</strong><br>${text.replace(/\n/g, '<br>')}`;
+                result.classList.remove('hidden');
+            }, 1000);
+        }
+
+        async function generateHoroscope() {
+            const loader = document.getElementById('horoscopeLoader');
+            const result = document.getElementById('horoscopeResult');
+
+            loader.style.display = 'inline-block';
+            result.classList.add('hidden');
+
+            // Simulate "Thinking" time
+            setTimeout(() => {
+                loader.style.display = 'none';
+                // Get random horoscope
+                const randomHoroscope = horoscopeData[Math.floor(Math.random() * horoscopeData.length)];
+                result.textContent = randomHoroscope;
+                result.classList.remove('hidden');
+            }, 800);
+        }
+
+        function createSnow() {
+            const container = document.getElementById('snowContainer');
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.width = snowflake.style.height = (Math.random() * 5 + 3) + 'px';
+            snowflake.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            container.appendChild(snowflake);
+            setTimeout(() => snowflake.remove(), 6000);
+        }
+
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = 
+                `${now.getFullYear()} оны ${now.getMonth()+1}-р сарын ${now.getDate()}`;
+        }
+    </script>
+</body>
+</html>
